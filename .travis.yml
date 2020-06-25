@@ -1,0 +1,21 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t qixuanli/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run qixuanli/react-test npm test -- --coverage
+
+after_success:
+    - docker build -t qixuanli/multi-client ./client
+    - docker build -t qixuanli/multi-nginx ./nginx
+    - docker build -t qixuanli/multi-server ./server
+    - docker build -t qixuanli/multi-worker ./worker
+    # need to log in to Docker CLI before push image to Docker Hub
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push qixuanli/multi-client
+    - docker push qixuanli/multi-nginx
+    - docker push qixuanli/multi-server
+    - docker push qixuanli/multi-worker
