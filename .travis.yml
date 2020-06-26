@@ -19,3 +19,15 @@ after_success:
     - docker push qixuanli/multi-nginx
     - docker push qixuanli/multi-server
     - docker push qixuanli/multi-worker
+
+deploy:
+    provider: elasticbeanstalk
+    region: us-east-2
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name: elasticbeanstalk-us-east-2-611233534077
+    bucket_path: docker-multi
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
